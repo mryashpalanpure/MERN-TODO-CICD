@@ -1,0 +1,40 @@
+pipeline{
+    agent any
+
+    stages{
+
+        stage('checkout'){
+            steps{
+             sh 'checkout scm'
+            }
+        }
+
+        stage('build frontend'){
+            steps{
+                dir('client'){
+                    sh 'docker build -t frontend .'
+                }
+            }
+        }
+
+        stage('build backend'){
+            steps{
+                dir('server'){
+                    sh 'docker build -t backend .'
+                }
+            }
+        }
+
+        stage('deploy frontend'){
+            steps{
+                sh 'docker run -d --name=todofrontend -p 5173:5173 frontend'
+            }
+        }
+        
+        stage('deploy backend'){
+            steps{
+                sh 'docker run -d --name=todobackend' -p 5001:5001 backend'
+            }
+        }
+    }
+}
